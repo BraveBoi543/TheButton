@@ -1,5 +1,4 @@
-﻿using Gma.System.MouseKeyHook;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,41 +12,32 @@ namespace Threading
     {
         static void Main(string[] args)
         {
+            // Point generation
             Random rand = new Random();
 
             int pointX = rand.Next(1920);
             int pointY = rand.Next(1080);
 
+            // Game loop
             while (true)
             {
+                // Gather current cursor x and y values
                 int userX = Cursor.Position.X;
                 int userY = Cursor.Position.Y;
 
-                if (userX < pointX)
-                {
-                    Console.WriteLine("Behind");
-                }
-                else
-                {
-                    Console.WriteLine("Past");
-                }
+                int distance = SlopeDistance(pointX, pointY, userX, userY);
+                Console.WriteLine($"You are currently {distance} units away");
+                
             }
             
         }
 
-        //Neither of these functions detect mouse clicks
-        private void MouseDown(object sender, MouseEventArgs e)
+        public static int SlopeDistance(int pointX, int pointY, int userX, int userY)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                Console.WriteLine("Test");
-                Console.WriteLine(Cursor.Position);
-            }
-        }
-
-        private void Control1_MouseCLick(Object sender, MouseEventArgs e)
-        {
-            Console.WriteLine("test");
+            int a = pointX - userX;
+            int b = pointY - userY;
+            int c = (a * a) + (b * b);
+            return Convert.ToInt32(Math.Round(Math.Sqrt(c)));
         }
     }
 }

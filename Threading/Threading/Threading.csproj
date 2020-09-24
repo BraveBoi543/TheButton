@@ -47,9 +47,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThreadingSamples\CrazyPC.cs" />
-    <Compile Include="ThreadingSamples\NoThreading.cs" />
-    <Compile Include="ThreadingSamples\ThreadingSample1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
