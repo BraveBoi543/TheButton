@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Gma.System.MouseKeyHook;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Threading
 {
@@ -10,24 +13,41 @@ namespace Threading
     {
         static void Main(string[] args)
         {
-            //RunNoThread();
-            //RunThreadingSample1();
-            RunPC();
+            Random rand = new Random();
+
+            int pointX = rand.Next(1920);
+            int pointY = rand.Next(1080);
+
+            while (true)
+            {
+                int userX = Cursor.Position.X;
+                int userY = Cursor.Position.Y;
+
+                if (userX < pointX)
+                {
+                    Console.WriteLine("Behind");
+                }
+                else
+                {
+                    Console.WriteLine("Past");
+                }
+            }
+            
         }
 
-        static void RunNoThread()
+        //Neither of these functions detect mouse clicks
+        private void MouseDown(object sender, MouseEventArgs e)
         {
-            ThreadingSamples.NoThreading.NoThreadFunctions();
+            if (e.Button == MouseButtons.Left)
+            {
+                Console.WriteLine("Test");
+                Console.WriteLine(Cursor.Position);
+            }
         }
 
-        static void RunThreadingSample1()
+        private void Control1_MouseCLick(Object sender, MouseEventArgs e)
         {
-            ThreadingSamples.ThreadingSample1.DemoThread();
-        }
-
-        static void RunPC()
-        {
-            ThreadingSamples.CrazyPC.CrazyFunctionCall();
+            Console.WriteLine("test");
         }
     }
 }
