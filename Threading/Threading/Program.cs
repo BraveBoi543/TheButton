@@ -20,10 +20,13 @@ namespace Threading
 
             public static int maxTime = 10000;
             public static int currentTime = 0;
+            public static int difficultyModifier;
 
             public static string folderPath = @"C:/Users/Public/Documents/";
             public static string txtPath = @"C:/Users/Public/Documents/myData.txt";
+            public static string scorePath = @"C:/Users/Public/Documents/score.txt";
             public static string userName;
+            public static string difficulty;
         }
 
 
@@ -35,8 +38,66 @@ namespace Threading
             int pointX = rand.Next(1920);
             int pointY = rand.Next(1080);
 
+            /*  Keeping for saftey for now
+             * 
+            // Test to see if file exists
+            if (File.Exists(Globals.txtPath))
+            {
+                using (StreamReader sr = File.OpenText(Globals.txtPath))
+                {
+                    // Iterates through each line and write the last one
+                    for (int i = 1; i < File.ReadLines(Globals.txtPath).Count(); i++)
+                    {
+                        sr.ReadLine();
+                    }
+                    Console.WriteLine(sr.ReadLine());
+                }
+            }
+            */
+
+            WriteLeaderboard();
+
+            // User enters name
             Console.Write("Enter name: ");
             Globals.userName = Console.ReadLine();
+
+
+            // Difficulty Selection
+            string userDifficulty = "";
+            while (!(userDifficulty == "easy") && !(userDifficulty == "medium") && !(userDifficulty == "hard") && !(userDifficulty == "extreme"))
+            {
+                Console.Write("Select a difficulty:\n- Easy\n- Medium\n- Hard\n- Extreme\n");
+                userDifficulty = Console.ReadLine().ToLower();
+            }
+
+            switch (userDifficulty)
+            {
+                case ("easy"):
+                    Globals.difficulty = "Easy";
+                    Globals.difficultyModifier = 25;
+                    break;
+
+                case ("medium"):
+                    Globals.difficulty = "Medium";
+                    Globals.difficultyModifier = 12;
+                    break;
+
+                case ("hard"):
+                    Globals.difficulty = "Hard";
+                    Globals.difficultyModifier = 5;
+                    break;
+
+                case ("extreme"):
+                    Globals.difficulty = "Extreme";
+                    Globals.difficultyModifier = 1;
+                    break;
+
+                default:
+                    Console.WriteLine("Something went wrong selecting difficulty. Auto selecting Medium. Press ENTER to continue. . .");
+                    Globals.difficulty = "Medium";
+                    Globals.difficultyModifier = 12;
+                    break;
+            }
 
             // Game loop
             while (Globals.gameLoop)
@@ -67,21 +128,59 @@ namespace Threading
             // Output 
             Console.WriteLine("\nGame over");
             Console.WriteLine($"You took {ConvertToSeconds(Globals.currentTime)} seconds");
-            Console.WriteLine("Press ENTER to exit. . .");
+            Console.WriteLine("Press ENTER to continue. . .");
             Console.ReadKey();
             // Record score on text file
             WriteToTxt();
 
-            // Open 
-            if (Globals.hasHit)
+            // Play again
+            bool confirmed = false;
+            bool playAgain = false;
+            while (!confirmed)
             {
-                System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=mnpjpdhUNjY");
+                Console.Write("Would you like to play again(Y/N)? ");
+                string userInput = Console.ReadLine().ToLower();
+
+                switch (userInput)
+                {
+                    case ("y"):
+                    case ("yes"):
+                        playAgain = true;
+                        confirmed = true;
+                        break;
+                    case ("n"):
+                    case ("no"):
+                        confirmed = true;
+                        break;
+
+                    default:
+                        confirmed = false;
+                        break;
+                }
+            }
+
+            // Calls main if user wants to play again
+            if (playAgain)
+            {
+                Globals.gameLoop = true;
+                Globals.hasHit = false;
+                Globals.currentTime = 0;
+                Main(null);
             }
             else
             {
-                System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=dQw4w9WgXcQ ");
-                Console.WriteLine("You couldn't hit the borad side of a barn with a bowling ball. Maybe try again.");
-                Console.ReadKey();
+                // Open 
+                if (Globals.hasHit)
+                {
+                    System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=mnpjpdhUNjY");
+                }
+                else
+                {
+                    System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=dQw4w9WgXcQ ");
+                    Console.WriteLine("You couldn't hit the borad side of a barn with a bowling ball. Maybe try again.");
+                    Console.WriteLine("Press ENTER to exit. . .");
+                    Console.ReadKey();
+                }
             }
             
         }
@@ -121,11 +220,11 @@ namespace Threading
             {
                 distanceName = "Hot     ";
             }
-            if (distance < 41 && distance > 5)
+            if (distance < 41 && distance > Globals.difficultyModifier)
             {
                 distanceName = "On Fire ";
             }
-            if (distance < 6)
+            if (distance <= Globals.difficultyModifier)
             {
                 distanceName = "Hit     ";
             }
@@ -161,20 +260,31 @@ namespace Threading
             {
                 // Tests to see if file exits
                 // If not, creates file
-                if (!File.Exists(Globals.txtPath))
+                if (!File.Exists(Globals.txtPath))      //myData.txt file
                 {
                     using (StreamWriter sw = File.CreateText(Globals.txtPath)) ;
                 }
                 else
                 {
-                    using (StreamReader sr = File.OpenText(Globals.txtPath))
+                    using (StreamWriter sw = new StreamWriter(Globals.txtPath, true))
                     {
-                        //OUTPUT TEXT IN FILE
-                        sr.Close();
+                        sw.WriteLine($"{Globals.userName} took {ConvertToSeconds(Globals.currentTime)} seconds on {Globals.difficulty} mode.");
+                        sw.Close();
+                    }
+                }
 
-                        // 'true' modifier at end appends the text file
-                        StreamWriter sw = new StreamWriter(Globals.txtPath, true);
-                        sw.WriteLine($"{Globals.userName} took {ConvertToSeconds(Globals.currentTime)} second(s)");
+                //CREATE A SEPARATE FILE IN ORDER TO ORDER SCORES CORRECTLY
+                //https://stackoverflow.com/questions/29897306/how-can-i-read-a-specific-part-of-a-text-file
+
+                if (!File.Exists(Globals.scorePath))        //score.txt file
+                {
+                    using (StreamWriter sw = File.CreateText(Globals.scorePath)) ;
+                }
+                else
+                {
+                    using (StreamWriter sw = new StreamWriter(Globals.scorePath, true))
+                    {
+                        sw.WriteLine($"{Globals.userName},{ConvertToSeconds(Globals.currentTime)},{Globals.difficulty}");
                         sw.Close();
                     }
                 }
@@ -190,6 +300,38 @@ namespace Threading
             catch (IOException e)
             {
                 Console.WriteLine($"The file could not be opened: {e}");
+            }
+        }
+
+        public static void WriteLeaderboard()
+        {
+            // Initiallizing values
+            string line;
+            var names = new List<string>();
+            var scores = new List<string>();
+            var difficulties = new List<string>();
+
+            if (!File.Exists(Globals.scorePath))
+            {
+                using (StreamWriter sw = File.CreateText(Globals.scorePath)) ;
+            }
+            else
+            {
+                StreamReader sw = new StreamReader(Globals.scorePath);
+                // Iterate through each line
+                while((line = sw.ReadLine()) != null)
+                {
+                    // Grabs all names and put them into list 'names'
+                    names.Add(line.Split(',')[0]);
+                    scores.Add(line.Split(',')[1]);
+                    difficulties.Add(line.Split(',')[2]);
+                }
+
+                sw.Close();
+
+                //SORT BY DIFFICULTY THEN BY SCORE
+                //REMEMBER THAT 'names', 'scores', AND 'difficulties' ARE NOT TIED TO EACHOTHER YET
+                //POSSIBLY COMBINE THEM, SORT BY DIFFICULY, THEN SORT BY SCORE
             }
         }
     }
