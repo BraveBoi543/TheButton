@@ -28,6 +28,7 @@ namespace Threading
             public static string userName;
             public static string difficulty;
             public static string timerDifficulty;
+            public static string sortedLeaderboard;
 
             public static List<PlayerScore> playerScoresList = new List<PlayerScore>();
         }
@@ -159,7 +160,6 @@ namespace Threading
                     Globals.gameLoop = false;
                     Globals.hasHit = true;
                 }
-
             }
 
             // Output 
@@ -390,6 +390,236 @@ namespace Threading
             {
                 Globals.playerScoresList.Add(new PlayerScore { Name = names[i], Time = Convert.ToInt32(scores[i]), Difficulty = difficulties[i], TimerDifficulty = timerDifficulties[i] });
             }
+        }
+
+        // Sort Leaderboard fully
+        public static void SortFullLeaderboard()
+        {
+            // Easy Lists
+            var easyMaster = new List<PlayerScore>();
+            var easySloth = new List<PlayerScore>();
+            var easyGiantTurtle = new List<PlayerScore>();
+            var easyGreenIguana = new List<PlayerScore>();
+            var easyCheetah = new List<PlayerScore>();
+            var easyPeregrineFalcon = new List<PlayerScore>();
+
+            // Medium Lists
+            var mediumMaster = new List<PlayerScore>();
+            var mediumSloth = new List<PlayerScore>();
+            var mediumGiantTurtle = new List<PlayerScore>();
+            var mediumGreenIguana = new List<PlayerScore>();
+            var mediumCheetah = new List<PlayerScore>();
+            var mediumPeregrineFalcon = new List<PlayerScore>();
+
+            // Hard Lists
+            var hardMaster = new List<PlayerScore>();
+            var hardSloth = new List<PlayerScore>();
+            var hardGiantTurtle = new List<PlayerScore>();
+            var hardGreenIguana = new List<PlayerScore>();
+            var hardCheetah = new List<PlayerScore>();
+            var hardPeregrineFalcon = new List<PlayerScore>();
+
+            // Extreme Lists
+            var extremeMaster = new List<PlayerScore>();
+            var extremeSloth = new List<PlayerScore>();
+            var extremeGiantTurtle = new List<PlayerScore>();
+            var extremeGreenIguana = new List<PlayerScore>();
+            var extremeCheetah = new List<PlayerScore>();
+            var extremePeregrineFalcon = new List<PlayerScore>();
+
+            // Group by size difficulty
+            foreach (var item in Globals.playerScoresList)
+            {
+                switch (item.Difficulty)
+                {
+                    case ("Easy"):
+                        easyMaster.Add(item);
+                        break;
+
+                    case ("Medium"):
+                        mediumMaster.Add(item);
+                        break;
+
+                    case ("Hard"):
+                        hardMaster.Add(item);
+                        break;
+
+                    case ("Extreme"):
+                        extremeMaster.Add(item);
+                        break;
+                }
+            }
+
+            // Group easy by time difficulty
+            foreach (var item in easyMaster)
+            {
+                switch (item.TimerDifficulty)
+                {
+                    case ("Sloth"):
+                        easySloth.Add(item);
+                        break;
+
+                    case ("Giant Turtle"):
+                        easyGiantTurtle.Add(item);
+                        break;
+
+                    case ("Green Iguana"):
+                        easyGreenIguana.Add(item);
+                        break;
+
+                    case ("Cheetah"):
+                        easyCheetah.Add(item);
+                        break;
+
+                    case ("Peregrine Falcon"):
+                        easyPeregrineFalcon.Add(item);
+                        break;
+                }
+            }
+
+            // Group medium by time difficulty
+            foreach (var item in mediumMaster)
+            {
+                switch (item.TimerDifficulty)
+                {
+                    case ("Sloth"):
+                        mediumSloth.Add(item);
+                        break;
+
+                    case ("Giant Turtle"):
+                        mediumGiantTurtle.Add(item);
+                        break;
+
+                    case ("Green Iguana"):
+                        mediumGreenIguana.Add(item);
+                        break;
+
+                    case ("Cheetah"):
+                        mediumCheetah.Add(item);
+                        break;
+
+                    case ("Peregrine Falcon"):
+                        mediumPeregrineFalcon.Add(item);
+                        break;
+                }
+            }
+
+            // Group hard by time difficulty
+            foreach (var item in hardMaster)
+            {
+                switch (item.TimerDifficulty)
+                {
+                    case ("Sloth"):
+                        hardSloth.Add(item);
+                        break;
+
+                    case ("Giant Turtle"):
+                        hardGiantTurtle.Add(item);
+                        break;
+
+                    case ("Green Iguana"):
+                        hardGreenIguana.Add(item);
+                        break;
+
+                    case ("Cheetah"):
+                        hardCheetah.Add(item);
+                        break;
+
+                    case ("Peregrine Falcon"):
+                        hardPeregrineFalcon.Add(item);
+                        break;
+                }
+            }
+
+            // Group extreme by time difficulty
+            foreach (var item in extremeMaster)
+            {
+                switch (item.TimerDifficulty)
+                {
+                    case ("Sloth"):
+                        extremeSloth.Add(item);
+                        break;
+
+                    case ("Giant Turtle"):
+                        extremeGiantTurtle.Add(item);
+                        break;
+
+                    case ("Green Iguana"):
+                        extremeGreenIguana.Add(item);
+                        break;
+
+                    case ("Cheetah"):
+                        extremeCheetah.Add(item);
+                        break;
+
+                    case ("Peregrine Falcon"):
+                        extremePeregrineFalcon.Add(item);
+                        break;
+                }
+            }
+
+            // Group easy sloth by score
+            var orderedEasySloth = easySloth.OrderBy(x => x.Time).ToList();
+
+            // Group easy giant turtle by score
+            var orderedEasyGiantTurtle = easyGiantTurtle.OrderBy(x => x.Time).ToList();
+
+            // Group easy green iguana by score
+            var orderedEasyGreenIguana = easyGreenIguana.OrderBy(x => x.Time).ToList();
+
+            // Group easy cheetah by score
+            var orderedEasyCheetah = easyCheetah.OrderBy(x => x.Time).ToList();
+
+            // Group easy peregrine falcon by score
+            var orderedEasyPeregrineFalcon = easyPeregrineFalcon.OrderBy(x => x.Time).ToList();
+
+            // Group medium sloth by score
+            var orderedMediumSloth = mediumSloth.OrderBy(x => x.Time).ToList();
+
+            // Group medium giant turtle by score
+            var orderedMediumGiantTurtle = mediumGiantTurtle.OrderBy(x => x.Time).ToList();
+
+            // Group medium green iguana by score
+            var orderedMediumGreenIguana = mediumGreenIguana.OrderBy(x => x.Time).ToList();
+
+            // Group medium cheetah by score
+            var orderedMediumCheetah = mediumCheetah.OrderBy(x => x.Time).ToList();
+
+            // Group medium peregrine falcon by sore
+            var orderedMediumPeregrineFalcon = mediumPeregrineFalcon.OrderBy(x => x.Time).ToList();
+
+            // Group hard sloth by score
+            var orderedHardSloth = hardSloth.OrderBy(x => x.Time).ToList();
+
+            // Group hard giant turtle by score 
+            var orderedHardGiantTurtle = hardGiantTurtle.OrderBy(x => x.Time).ToList();
+
+            // Group hard green iguana by score
+            var orderedHardGreenIguana = hardGreenIguana.OrderBy(x => x.Time).ToList();
+
+            // Group hard cheetah by score
+            var orderdHardCheetah = hardCheetah.OrderBy(x => x.Time).ToList();
+
+            // Group hard peregrine falcon by score
+            var orderedHardPeregrineFalcone = hardPeregrineFalcon.OrderBy(x => x.Time).ToList();
+
+            // Group extreme sloth by score
+            var orderedExtremeSloth = extremeSloth.OrderBy(x => x.Time).ToList();
+
+            // Group extreme giant turtle by score
+            var orderedExtremeGiantTurtle = extremeGiantTurtle.OrderBy(x => x.Time).ToList();
+
+            // Group extreme green iguana by score
+            var orderedExtremeGreenIguana = extremeGreenIguana.OrderBy(x => x.Time).ToList();
+
+            // Group extreme cheetah by score
+            var orderedExtremeCheetah = extremeCheetah.OrderBy(x => x.Time).ToList();
+
+            // Group extreme peregrine falcon by score
+            var orderedExtremePeregrineFalcon = extremePeregrineFalcon.OrderBy(x => x.Time).ToList();
+
+            
+            
         }
     }
 }
