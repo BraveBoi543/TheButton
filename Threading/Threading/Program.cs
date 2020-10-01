@@ -27,6 +27,8 @@ namespace Threading
             public static string scorePath = @"C:/Users/Public/Documents/score.txt";
             public static string userName;
             public static string difficulty;
+
+            public static List<PlayerScore> playerScoresList = new List<PlayerScore>();
         }
 
 
@@ -54,7 +56,7 @@ namespace Threading
                 }
             }
             */
-
+            WriteObjectsToMemory();
             WriteLeaderboard();
 
             // User enters name
@@ -301,14 +303,29 @@ namespace Threading
             {
                 Console.WriteLine($"The file could not be opened: {e}");
             }
+
+            // Instantiate new object and add to list
+            Globals.playerScoresList.Add(new PlayerScore { Name = Globals.userName, Time = ConvertToSeconds(Globals.currentTime), Difficulty = Globals.difficulty });
         }
 
+        // Display leaderboard in order
         public static void WriteLeaderboard()
+        {
+            var orderedScores = Globals.playerScoresList.OrderByDescending(x => x.Time).ToList();
+
+            for (int i = 0; i < orderedScores.Count; i++)
+            {
+                Console.WriteLine(orderedScores[i]);
+            }
+        }
+
+        // Creates objects using myData.txt
+        public static void WriteObjectsToMemory()
         {
             // Initiallizing values
             string line;
             var names = new List<string>();
-            var scores = new List<string>();
+            var scores = new List<int>();
             var difficulties = new List<string>();
 
             if (!File.Exists(Globals.scorePath))
@@ -319,19 +336,27 @@ namespace Threading
             {
                 StreamReader sw = new StreamReader(Globals.scorePath);
                 // Iterate through each line
-                while((line = sw.ReadLine()) != null)
+                while ((line = sw.ReadLine()) != null)
                 {
                     // Grabs all names and put them into list 'names'
                     names.Add(line.Split(',')[0]);
-                    scores.Add(line.Split(',')[1]);
+                    scores.Add(Convert.ToString(line.Split(','))[1]);
                     difficulties.Add(line.Split(',')[2]);
                 }
 
                 sw.Close();
+            }
 
-                //SORT BY DIFFICULTY THEN BY SCORE
-                //REMEMBER THAT 'names', 'scores', AND 'difficulties' ARE NOT TIED TO EACHOTHER YET
-                //POSSIBLY COMBINE THEM, SORT BY DIFFICULY, THEN SORT BY SCORE
+            // Iterate through 'names' list and pass info from all lists into 'PlayerScore' objects
+            for (int i = 0; i < names.Count; i++)
+            {
+                Globals.playerScoresList.Add(new PlayerScore { Name = names[i], Time = ConvertToSeconds(scores[i]), Difficulty = difficulties[i] });
+            }
+
+            for (int i = 0; i < scores.Count; i++)
+            {
+                Console.WriteLine(scores[i]);
+                Console.WriteLine(scores.Count);
             }
         }
     }
